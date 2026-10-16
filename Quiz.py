@@ -30,3 +30,63 @@ def move_marquee():
     marquee_box.x = marquee_box.x - 2
     if marquee_box.right < 0:
         marquee_box.left = WIDTH
+
+def read_question_file(): 
+    global question_count, questions
+
+    try:
+        q_file = open( question_file_name, "r")
+        for questions_line in q_file: 
+            question_line = question_line.strip()
+            if question_line: 
+                questions.append(question_line)
+                question_count = question_count + 1
+                q_file.close()
+            print("Questions loaded", question_count)
+    except FileNotFoundError:
+        print("ERROR: questions.txt not found!")
+        print("Looking for:")
+        print(question_file_name)
+
+def read_next_question():
+    global question_index
+    if questions:
+        question_index = question_index + 1
+        next_question = questions.pop(0)
+        return next_question.split(",")
+    else:
+        return["No more questions!",
+               "-",
+               "-",
+               "-",
+               "-",
+               "0"
+               ]
+
+def on_mouse_down(*pos):
+    global question
+    if is_game_over:
+        return
+    index = 1
+    for box in answer_boxes:
+        if box.collidepoint(*pos):
+            if len(question) >=6:
+                correct_answer_number = int(question[5])
+                if index == correct_answer_number:
+                    correct_answer()
+                else:
+                    game_over()
+            return
+    index = index + 1
+
+def draw(): 
+    global marquee_message
+    screen.clear()
+    screen.fill("black")
+    screen.draw.filled_rect(marquee_box, "black")
+    screen.draw.filled_rect(question_box, "navy blue")
+    screen.draw.filled_rect(timer_box, "navy bue")
+    screen.draw.filled_rect(skip_box, "dark green")
+    for i in answer_boxes:
+        screen.draw.filled_rect("Welcome to Quiz Master", color = "White")
+        screen.draw.filled_()
